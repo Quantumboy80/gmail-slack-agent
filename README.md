@@ -1,27 +1,74 @@
-# Slack-Gmail Agentic AI System
+# ⚡ Slack-Gmail Agentic AI Copilot
 
-This project is an agentic AI system that monitors your Gmail inbox for new unread messages, uses Gemini 2.0 to summarize and triage them, drafts replies, and posts them as interactive notifications to a Slack channel. You can approve and send the draft, request revisions, or discard the triage directly from Slack.
+<div align="center">
+
+  ![Python](https://img.shields.io/badge/python-v3.10+-blue?style=for-the-badge&logo=python&logoColor=white)
+  ![Gemini](https://img.shields.io/badge/Gemini%20AI-2.0%20Flash--Lite-orange?style=for-the-badge&logo=google-gemini&logoColor=white)
+  ![Slack](https://img.shields.io/badge/Slack-Bolt%20SDK-green?style=for-the-badge&logo=slack&logoColor=white)
+  ![Gmail](https://img.shields.io/badge/Gmail%20API-Integration-red?style=for-the-badge&logo=gmail&logoColor=white)
+  ![License](https://img.shields.io/badge/license-MIT-brightgreen?style=for-the-badge)
+
+  <p align="center">
+    An autonomous agentic AI copilot that triages your Gmail inbox, generates contextual drafts using Gemini 2.0, and puts control directly in your Slack workspace.
+  </p>
+</div>
 
 ---
 
-## 📐 Architecture & Decision Flow
+## 🤖 The Agentic Workflow (System Design)
 
-The system runs a polling loop that queries Gmail, uses Gemini with **Structured Outputs** to categorize the mail, and posts alerts to Slack via **Socket Mode** for interactive control.
+This app functions as a **reactive agent loop** with **Human-in-the-Loop (HITL)** safeguards. The agent autonomously classifies, decides, and drafts responses, but delegates the final execution (sending) to you via Slack interactive block actions.
 
 ```mermaid
-graph TD
-    A[New Email Received] -->|Gmail Polling| B(AI Agent Engine)
-    B -->|Analyze Context & Goal| C{Categorize Email}
-    
-    C -->|Low Priority / Spam| D[Auto-Archive / Mark Read]
-    C -->|Action Required| E[Generate Reply Draft]
-    C -->|Informational| H[Post Summary Alert to Slack]
-    
-    E --> F[Send Slack Notification with Draft & Interactive Buttons]
-    F -->|User clicks 'Approve'| G[Gmail API: Send Email]
-    F -->|User clicks 'Edit'| I[Slack Modal: Input customized edits] --> J[Regenerate Draft] --> F
-    F -->|User clicks 'Discard'| K[Ignore / Keep Read]
+sequenceDiagram
+    autonumber
+    actor User as User (Slack)
+    participant SlackApp as Slack Bot (Socket Mode)
+    participant Main as Main Loop (Orchestrator)
+    participant Gmail as Gmail Client
+    participant AI as Gemini 2.0 (Agent Engine)
+
+    loop Polling (Every 60s)
+        Main->>Gmail: Poll for unread emails
+        Gmail-->>Main: Return new email details
+        
+        Main->>AI: Send email metadata (Triage & Summarize)
+        Note over AI: Triage Prompt + Structured Output Schema
+        AI-->>Main: Return Category (Action, Info, Spam), Urgency, Summary
+        
+        alt is Spam
+            Main->>Gmail: Mark as read (skip)
+        else is Informational
+            Main->>SlackApp: Post FYI Summary Notification
+            Main->>Gmail: Mark as read
+        else is Action Required
+            Main->>AI: Generate Contextual Response Draft
+            AI-->>Main: Return proposed drafted response
+            Main->>SlackApp: Post interactive Block Notification with Approve/Revise/Discard
+            Main->>Gmail: Mark as read (clear from polling queue)
+        end
+    end
+
+    User->>SlackApp: Click [🚀 Approve & Send]
+    SlackApp->>Gmail: Call Gmail API to send email reply
+    SlackApp->>User: Update Slack block -> ✅ Sent!
+
+    User->>SlackApp: Click [✍️ Revise Draft]
+    SlackApp->>User: Open Slack Modal (Get Feedback)
+    User->>SlackApp: Submit Feedback ("make it friendly")
+    SlackApp->>AI: Request draft revision (Orig + Old Draft + Feedback)
+    AI-->>SlackApp: Return updated draft response
+    SlackApp->>User: Update Slack block with new draft
 ```
+
+---
+
+## 🌟 Key Features
+
+*   🧠 **Structured Triage**: Utilizes Pydantic schemas and Gemini Structured Outputs to classify email intent with near-perfect consistency.
+*   💬 **Human-in-the-Loop Revision**: Don't like the draft? Click `Revise Draft` to open a Slack Modal, type what you want to change, and the agent regenerates the draft.
+*   ⚡ **Zero-Tunneling Socket Mode**: Running locally over WebSockets. No `ngrok` or port-forwarding required.
+*   ⏱️ **Built-in Rate-Limiting**: Polling runs on a controlled delay system to respect free-tier Gemini API limitations.
 
 ---
 
@@ -49,35 +96,17 @@ gmail-slack-agent/
 
 ---
 
-## 🛠️ Tech Stack & Prerequisites
-
-*   **Language**: Python 3.10+
-*   **APIs**: Google Gemini API, Gmail API, Slack Bolt API (Socket Mode)
-*   **Key Libraries**: `google-genai`, `slack-bolt`, `google-api-python-client`, `pydantic`
-
----
-
 ## 🔑 Setup & Configuration
 
 ### 1. Slack App Configuration (Socket Mode)
-1.  Go to the [Slack App Console](https://api.slack.com/apps) and click **Create New App** -> **From Scratch**. Name your app (e.g., `Gmail AI Agent`) and choose your workspace.
-2.  **Enable Socket Mode**:
-    *   Navigate to **Socket Mode** in the left sidebar and toggle it **On**.
-    *   It will ask you to generate an **App-Level Token**. Set the name (e.g., `AppToken`) and add the `connections:write` scope.
-    *   Copy the token (starts with `xapp-...`). This is your `SLACK_APP_TOKEN`.
-3.  **Add Scopes & Permissions**:
-    *   Navigate to **OAuth & Permissions** in the sidebar.
-    *   Scroll down to **Scopes** -> **Bot Token Scopes** and add:
-        *   `chat:write` (Allows the bot to post messages)
-        *   `chat:write.public` (Allows posting to public channels without joining)
-    *   Scroll up and click **Install to Workspace**. Authorize the app.
-    *   Copy the **Bot User OAuth Token** (starts with `xoxb-...`). This is your `SLACK_BOT_TOKEN`.
-4.  **Get Signing Secret**:
-    *   Go to **Basic Information** and find the **Signing Secret** under "App Credentials". Copy this as `SLACK_SIGNING_SECRET`.
-5.  **Enable Interactivity**:
-    *   Go to **Interactivity & Shortcuts** in the sidebar and toggle it **On**. (You don't need a Request URL since Socket Mode handles events). Click **Save Changes**.
-
----
+1.  Go to the [Slack App Console](https://api.slack.com/apps) -> **Create New App** -> **From Scratch**.
+2.  **Enable Socket Mode**: Go to **Socket Mode** in the sidebar, toggle it **On**, and generate an App Token (add scope `connections:write`). Copy the token (starts with `xapp-...`). This is your `SLACK_APP_TOKEN`.
+3.  **Add Scopes & Permissions**: Under **OAuth & Permissions** -> **Bot Token Scopes**, add:
+    *   `chat:write` (Allows the bot to post messages)
+    *   `chat:write.public` (Allows posting to public channels without joining)
+4.  Click **Install to Workspace** and copy the **Bot User OAuth Token** (starts with `xoxb-...`). This is your `SLACK_BOT_TOKEN`.
+5.  Under **Basic Information**, copy the **Signing Secret** (`SLACK_SIGNING_SECRET`).
+6.  Go to **Interactivity & Shortcuts** in the sidebar and toggle it **On** (Socket Mode handles routing, so you don't need a Request URL). Click **Save Changes**.
 
 ### 2. Google Cloud / Gmail API Configuration
 1.  Go to the [Google Cloud Console](https://console.cloud.google.com/).
@@ -96,8 +125,6 @@ gmail-slack-agent/
     *   Set Application Type to **Desktop app**. Name it `Gmail Slack Agent`.
     *   Click **Create**, then click **Download JSON** on the OAuth client screen.
     *   Rename this downloaded file to `credentials.json` and save it directly in the project root.
-
----
 
 ### 3. Gemini API Key
 *   Obtain a Gemini API key from [Google AI Studio](https://aistudio.google.com/). Select **Create key in new project** to avoid project-level quota policies.
