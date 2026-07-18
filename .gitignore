@@ -1,0 +1,24 @@
+# Environment secrets
+.env
+
+# Google API Credentials & local tokens
+token.json
+credentials.json
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python Caches & Compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# IDE settings
+.vscode/
+.idea/
+.DS_Store
