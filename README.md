@@ -6,7 +6,7 @@
   <p align="center">
     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" width="45" height="45" alt="Python" />
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d472dc298b7c3d50a9ee7.svg" width="45" height="45" alt="Gemini" />
+    <img src="https://img.icons8.com/color/512/google-gemini.png" width="45" height="45" alt="Gemini" />
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/slack/slack-original.svg" width="45" height="45" alt="Slack" />
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
