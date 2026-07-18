@@ -2,14 +2,30 @@
 
 <div align="center">
 
-  ![Python](https://img.shields.io/badge/python-v3.10+-blue?style=for-the-badge&logo=python&logoColor=white)
-  ![Gemini](https://img.shields.io/badge/Gemini%20AI-2.0%20Flash--Lite-orange?style=for-the-badge&logo=google-gemini&logoColor=white)
-  ![Slack](https://img.shields.io/badge/Slack-Bot%20SDK-green?style=for-the-badge&logo=slack&logoColor=white)
-  ![Gmail](https://img.shields.io/badge/Gmail%20API-Integration-red?style=for-the-badge&logo=gmail&logoColor=white)
-  ![License](https://img.shields.io/badge/license-MIT-brightgreen?style=for-the-badge)
+  <!-- Brand Logos -->
+  <p align="center">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" width="45" height="45" alt="Python" />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d472dc298b7c3d50a9ee7.svg" width="45" height="45" alt="Gemini" />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/slack/slack-original.svg" width="45" height="45" alt="Slack" />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" width="45" height="45" alt="Gmail" />
+  </p>
+
+  <!-- Solid Brand Badges -->
+  <p align="center">
+    <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white" /></a>
+    &nbsp;
+    <a href="https://ai.google.dev"><img src="https://img.shields.io/badge/Gemini%202.0-Flash--Lite-8E75C2?style=flat-square&logo=googlegemini&logoColor=white" /></a>
+    &nbsp;
+    <a href="https://api.slack.com"><img src="https://img.shields.io/badge/Slack%20Bolt-v1.18-4A154B?style=flat-square&logo=slack&logoColor=white" /></a>
+    &nbsp;
+    <a href="https://developers.google.com/gmail/api"><img src="https://img.shields.io/badge/Gmail%20API-Integration-D14836?style=flat-square&logo=gmail&logoColor=white" /></a>
+  </p>
 
   <p align="center">
-    An autonomous agentic AI copilot that triages your Gmail inbox, generates contextual drafts using Gemini 2.0, and puts control directly in your Slack workspace.
+    <b>An autonomous agentic AI copilot that triages your Gmail inbox, generates contextual drafts using Gemini 2.0, and puts control directly in your Slack workspace.</b>
   </p>
 </div>
 
